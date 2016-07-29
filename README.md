@@ -6,18 +6,23 @@
 
 ## Example
 
-<script src="websocket.actioncable.rails.client.js"></script>
 
 ```javascript
 
-    ws = new WebSocketActionCable('ws://localhost:28080/cable');
+   <script src="websocket.actioncable.rails.client.js"></script>
+   
+   <script>
+
+        ws = new WebSocketActionCable('ws://localhost:28080/cable');
+        
+        ws.subscriptions('TestChannel', {event_id: 1});
+        
+        // implement this function in your logic to use the data received from websocket
+        function dataWebSocket(data) {
+            console.log('Receiving data', data);
+        }
     
-    ws.subscriptions('TestChannel', {event_id: 1});
-    
-    // implement this function in your logic to use the data received from websocket
-    function dataWebSocket(data) {
-        console.log('Receiving data', data);
-    }
+    </script>
 
 ```
 
