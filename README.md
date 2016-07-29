@@ -9,7 +9,7 @@
 
 ```javascript
 
-   <script src="websocket.actioncable.rails.client.js"></script>
+   <script src="websocket_actioncable_rails_client.js"></script>
    
    <script>
 
