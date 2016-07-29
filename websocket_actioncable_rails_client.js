@@ -1,6 +1,5 @@
 function WebSocketActionCable(websocketHost) {
     (function () {
-
         var slice = [].slice;
 
         this.ActionCable = {
@@ -242,7 +241,6 @@ function WebSocketActionCable(websocketHost) {
             }
 
             Connection.prototype.send = function (data) {
-                console.log('data', data);
                 if (this.isOpen()) {
                     this.webSocket.send(JSON.stringify(data));
                     return true;
@@ -357,7 +355,6 @@ function WebSocketActionCable(websocketHost) {
                         return;
                     }
                     ref1 = JSON.parse(event.data), identifier = ref1.identifier, message = ref1.message, type = ref1.type;
-                    console.log('ref1', ref1);
                     switch (type) {
                         case message_types.welcome:
                             this.monitor.recordConnect();
@@ -369,7 +366,6 @@ function WebSocketActionCable(websocketHost) {
                         case message_types.rejection:
                             return this.subscriptions.reject(identifier);
                         default:
-                            //return this.subscriptions.notify(identifier, "received", message);
                             return dataWebSocket(message);
                     }
                 },
@@ -398,9 +394,7 @@ function WebSocketActionCable(websocketHost) {
                     return ActionCable.log("WebSocket onerror event");
                 }
             };
-
             return Connection;
-
         })();
 
     }).call(this);
@@ -614,20 +608,10 @@ function WebSocketActionCable(websocketHost) {
                     return this.connection.open();
                 }
             };
-
             return Consumer;
-
         })();
 
     }).call(this);
-
-
-    //(function() {
-    //    this.App = {};
-    //
-    //    App.cable = ActionCable.createConsumer(websocketHost);
-    //
-    //}).call(this);
 
     this.myConsumer = function consummer(){
         return ActionCable.createConsumer(websocketHost);
@@ -642,6 +626,7 @@ function WebSocketActionCable(websocketHost) {
                     };
                 })(this), 1000);
             },
+
             followCurrentMessage: function() {
                 return this.perform('follow', eventObject);
             }
