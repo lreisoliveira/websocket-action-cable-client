@@ -1,3 +1,6 @@
+var aux_call_ws     = [];
+var data_message_ws = [];
+
 function WebSocketActionCable(websocketHost) {
     (function () {
         var slice = [].slice;
@@ -40,6 +43,7 @@ function WebSocketActionCable(websocketHost) {
                 } else {
                     return url;
                 }
+
             },
 
             startDebugging: function () {
@@ -61,6 +65,7 @@ function WebSocketActionCable(websocketHost) {
         };
 
         if (typeof window !== "undefined" && window !== null) {
+
             window.ActionCable = this.ActionCable;
         }
 
@@ -266,6 +271,7 @@ function WebSocketActionCable(websocketHost) {
             };
 
             Connection.prototype.close = function (arg) {
+                console.log('Disconected..');
                 var allowReconnect, ref1;
                 allowReconnect = (arg != null ? arg : {
                     allowReconnect: true
@@ -276,6 +282,7 @@ function WebSocketActionCable(websocketHost) {
                 if (this.isActive()) {
                     return (ref1 = this.webSocket) != null ? ref1.close() : void 0;
                 }
+
             };
 
             Connection.prototype.reopen = function () {
@@ -366,7 +373,7 @@ function WebSocketActionCable(websocketHost) {
                         case message_types.rejection:
                             return this.subscriptions.reject(identifier);
                         default:
-                            return dataWebSocket(message);
+                            data_message_ws[JSON.parse(ref1.identifier).channel] = message;
                     }
                 },
                 open: function () {
@@ -617,7 +624,10 @@ function WebSocketActionCable(websocketHost) {
         return ActionCable.createConsumer(websocketHost);
     };
 
-    this.subscriptions = function subscriptions(channelName, eventObject){
+    this.bind = function subscriptions(channelName, eventObject, call){
+
+        aux_call_ws[channelName]     = '';
+        data_message_ws[channelName] = '';
         this.myConsumer().subscriptions.create(channelName, {
             connected: function() {
                 return setTimeout((function(_this) {
@@ -626,10 +636,15 @@ function WebSocketActionCable(websocketHost) {
                     };
                 })(this), 1000);
             },
-
             followCurrentMessage: function() {
                 return this.perform('follow', eventObject);
             }
         });
+        setInterval(function(){
+          if (aux_call_ws[channelName] != data_message_ws[channelName]){
+            aux_call_ws[channelName] = data_message_ws[channelName]
+            call(data_message_ws[channelName]);
+          }
+        }, 1000);
     };
 }
