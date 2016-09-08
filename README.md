@@ -19,7 +19,7 @@
               console.log('Connection ok');
               return;
           }
-          console.log('Connection fails. You can make something here');
+          console.log('Connection failed. You can make something here');
       });
 
       ws.bind('TestChannel', {evento: 1}, function(data) {
