@@ -22,7 +22,7 @@
           console.log('Connection failed. You can make something here');
       });
 
-      ws.bind('TestChannel', {evento: 1}, function(data) {
+      ws.bind('TestChannel', {event_name: 'name'}, function(data) {
         console.log('Receiving data', data);
       });
     </script>
