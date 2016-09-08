@@ -1,5 +1,6 @@
 var aux_call_ws     = [];
 var data_message_ws = [];
+var websocketState  = '';
 
 function WebSocketActionCable(websocketHost) {
     (function () {
@@ -43,7 +44,6 @@ function WebSocketActionCable(websocketHost) {
                 } else {
                     return url;
                 }
-
             },
 
             startDebugging: function () {
@@ -76,6 +76,7 @@ function WebSocketActionCable(websocketHost) {
     }).call(this);
 
     (function () {
+
         var bind = function (fn, me) {
             return function () {
                 return fn.apply(me, arguments);
@@ -264,6 +265,7 @@ function WebSocketActionCable(websocketHost) {
                         this.uninstallEventHandlers();
                     }
                     this.webSocket = new WebSocket(this.consumer.url, protocols);
+                    websocketState = this.webSocket;
                     this.installEventHandlers();
                     this.monitor.start();
                     return true;
@@ -581,9 +583,7 @@ function WebSocketActionCable(websocketHost) {
                 }
                 return object;
             };
-
             return Subscription;
-
         })();
 
     }).call(this);
@@ -624,10 +624,10 @@ function WebSocketActionCable(websocketHost) {
         return ActionCable.createConsumer(websocketHost);
     };
 
-    this.bind = function subscriptions(channelName, eventObject, call){
-
+    this.bind = function subscriptions(channelName, eventObject, call) {
         aux_call_ws[channelName]     = '';
         data_message_ws[channelName] = '';
+
         this.myConsumer().subscriptions.create(channelName, {
             connected: function() {
                 return setTimeout((function(_this) {
@@ -640,11 +640,18 @@ function WebSocketActionCable(websocketHost) {
                 return this.perform('follow', eventObject);
             }
         });
+
         setInterval(function(){
           if (aux_call_ws[channelName] != data_message_ws[channelName]){
             aux_call_ws[channelName] = data_message_ws[channelName]
             call(data_message_ws[channelName]);
           }
         }, 1000);
+    };
+
+    this.conexao = function open(call) {
+      setInterval(function() {
+        call(websocketState.readyState == 1 ? true : false);
+      }, 1000);
     };
 }
